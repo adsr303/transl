@@ -21,7 +21,7 @@ func init() {
 	}
 }
 
-// DecodeEbcdic converts EBCDIC text in `bytes“ to UTF-8 string.
+// DecodeEbcdic converts EBCDIC text in `bytes` to UTF-8 string.
 func DecodeEbcdic(bytes []byte) string {
 	var result = make([]rune, 0, len(bytes))
 	for _, b := range bytes {
