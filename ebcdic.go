@@ -2,8 +2,8 @@ package transl
 
 import (
 	_ "embed"
+	"encoding/hex"
 	"log"
-	"strconv"
 )
 
 //go:embed ebcdic2unicode.hex
@@ -12,12 +12,15 @@ var hexMapping string
 var ebcdic2unicode [256]rune
 
 func init() {
-	for i := range 256 {
-		n, err := strconv.ParseUint(hexMapping[2*i:2*(i+1)], 16, 8)
-		if err != nil {
-			log.Fatalf("initializing EBCDIC to Unicode mapping: %v", err)
-		}
-		ebcdic2unicode[i] = rune(n)
+	bytes, err := hex.DecodeString(hexMapping)
+	if err != nil {
+		log.Fatalf("invalid EBCDIC mapping file: %v", err)
+	}
+	if len(bytes) != len(ebcdic2unicode) {
+		log.Fatal("invalid EBCDIC mapping file")
+	}
+	for i, b := range bytes {
+		ebcdic2unicode[i] = rune(b)
 	}
 }
 
